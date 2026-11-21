@@ -1,0 +1,22 @@
+name: CI
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Check out the six cores
+        run: |
+          mkdir -p cores
+          for r in the-ledger the-registry the-shield the-sword the-commons the-safety-net; do
+            git clone -q --depth 1 https://github.com/Frozen-In-Flames/$r.git cores/$r
+          done
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - name: End to end umbrella test (oracle: cash $99,500.00 NCU)
+        run: python -m unittest discover -s tests -v
